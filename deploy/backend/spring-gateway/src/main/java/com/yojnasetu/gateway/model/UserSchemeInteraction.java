@@ -1,9 +1,12 @@
 package com.yojnasetu.gateway.model;
 
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
@@ -11,26 +14,18 @@ import java.time.LocalDateTime;
  * Tracks every interaction a user has with a scheme:
  * viewing it, bookmarking it, or submitting an application.
  */
-@Entity
-@Table(name = "user_scheme_interactions", indexes = {
-        @Index(name = "idx_usi_user", columnList = "user_id"),
-        @Index(name = "idx_usi_scheme", columnList = "scheme_id"),
-        @Index(name = "idx_usi_type", columnList = "interaction_type")
-})
+@Document(collection = "user_scheme_interactions")
 @Data
 @NoArgsConstructor
 public class UserSchemeInteraction {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @DBRef
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "scheme_id", nullable = false)
+    @DBRef
     private Scheme scheme;
 
     /**
@@ -39,18 +34,15 @@ public class UserSchemeInteraction {
      * BOOKMARKED — user explicitly saved it
      * APPLIED — user started the application wizard
      */
-    @Column(name = "interaction_type", nullable = false, length = 20)
+    @Indexed
     private String interactionType;
 
     /** Application reference ID, if the user has applied */
-    @Column(length = 100)
     private String applicationId;
 
     /** Current application status, if known */
-    @Column(length = 100)
     private String applicationStatus;
 
-    @CreationTimestamp
-    @Column(updatable = false)
+    @CreatedDate
     private LocalDateTime timestamp;
 }
