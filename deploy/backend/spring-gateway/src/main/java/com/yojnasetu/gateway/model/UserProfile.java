@@ -1,9 +1,12 @@
 package com.yojnasetu.gateway.model;
 
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
@@ -12,22 +15,19 @@ import java.time.LocalDateTime;
  * These socioeconomic fields determine scheme eligibility
  * and are used by the /api/profile/matching-schemes endpoint.
  */
-@Entity
-@Table(name = "user_profiles")
+@Document(collection = "user_profiles")
 @Data
 @NoArgsConstructor
 public class UserProfile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @DBRef
+    @Indexed(unique = true)
     private User user;
 
     /** District within the state */
-    @Column(length = 100)
     private String district;
 
     /** Annual family income in INR */
@@ -37,7 +37,6 @@ public class UserProfile {
      * Occupation type: FARMER, DAILY_WAGE, SELF_EMPLOYED, GOVT_EMPLOYEE,
      * UNEMPLOYED, OTHER
      */
-    @Column(length = 30)
     private String occupation;
 
     /** Number of people in the family */
@@ -68,9 +67,8 @@ public class UserProfile {
     private Double landOwnedAcres;
 
     /** Gender: MALE, FEMALE, OTHER */
-    @Column(length = 10)
     private String gender;
 
-    @UpdateTimestamp
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 }

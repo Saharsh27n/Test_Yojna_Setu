@@ -1,48 +1,39 @@
 package com.yojnasetu.gateway.model;
 
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
 /** A single message within a chat session. */
-@Entity
-@Table(name = "chat_messages", indexes = {
-        @Index(name = "idx_chat_messages_session", columnList = "session_id"),
-        @Index(name = "idx_chat_messages_ts", columnList = "timestamp")
-})
+@Document(collection = "chat_messages")
 @Data
 @NoArgsConstructor
 public class ChatMessage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "session_id", nullable = false)
+    @DBRef
     private ChatSession session;
 
     /**
      * Message role: USER or ASSISTANT
      */
-    @Column(nullable = false, length = 15)
     private String role;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
     /**
      * JSON array of scheme keys mentioned, e.g. ["pmkisan","nrega"]
-     * Stored as text for portability; can be queried with LIKE or cast to JSONB in
-     * Postgres.
+     * Stored as text for portability.
      */
-    @Column(columnDefinition = "TEXT")
     private String schemesmentioned;
 
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
+    @CreatedDate
     private LocalDateTime timestamp;
 }
