@@ -233,9 +233,9 @@ API Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 | Member | Role |
 |--------|------|
 | **Rudra (AI/ML Lead)** | FastAPI, LangChain RAG+Memory, Yojna Sathi agent, Whisper/Sarvam voice pipeline, PII masking, Status Tracker, Streaming API |
-| Member 2 | Spring Boot API Gateway, JWT auth, PostgreSQL |
-| Member 3 | Flask OCR Worker, PaddleOCR, Maps/YouTube APIs |
-| Member 4 | React.js Frontend, Camera/Mic hooks, Multilingual UI |
+| **Pranjal Srivastava** | Spring Boot API Gateway, JWT auth, PostgreSQL |
+| **Sachin / Samarth** | Flask OCR Worker, PaddleOCR, Maps/YouTube APIs |
+| **Saharsh Singh** | React.js Frontend, Camera/Mic hooks, Multilingual UI |
 
 ---
 
