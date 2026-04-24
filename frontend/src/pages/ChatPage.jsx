@@ -2,29 +2,10 @@ import { useState, useRef, useEffect } from 'react'
 import { Send, Mic, MicOff, VolumeX } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { Navbar, BottomNav } from '../components/Navbar'
+import { SathiAvatar } from '../components/Icons'
+import { API_BASE, SUPPORTED_LANGUAGES } from '../lib/constants'
 import '../components/components.css'
 import './ChatPage.css'
-
-const API = '/api'
-
-const LANG_NAMES = {
-    hi: 'Hindi', en: 'English', bn: 'Bengali', ta: 'Tamil',
-    te: 'Telugu', kn: 'Kannada', mr: 'Marathi', gu: 'Gujarati', pa: 'Punjabi'
-}
-
-/* Custom Sathi AI Avatar SVG */
-const SathiAvatar = () => (
-    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
-        <circle cx="30" cy="22" r="10" fill="rgba(232,141,10,0.9)" />
-        <circle cx="30" cy="22" r="6" fill="#0d0e1c" />
-        <circle cx="27" cy="20" r="2" fill="#e88d0a" />
-        <circle cx="33" cy="20" r="2" fill="#e88d0a" />
-        <rect x="18" y="35" width="24" height="16" rx="4" fill="rgba(232,141,10,0.8)" />
-        <rect x="22" y="40" width="4" height="6" rx="1" fill="#0d0e1c" />
-        <rect x="34" y="40" width="4" height="6" rx="1" fill="#0d0e1c" />
-        <line x1="30" y1="32" x2="30" y2="35" stroke="rgba(232,141,10,0.8)" strokeWidth="2" />
-    </svg>
-)
 
 export default function ChatPage() {
     const navigate = useNavigate()
@@ -116,7 +97,7 @@ export default function ChatPage() {
         try {
             const form = new FormData()
             form.append('language', 'hi')
-            const res = await fetch(`${API}/voice/conversation/start`, { method: 'POST', body: form })
+            const res = await fetch(`${API_BASE}/voice/conversation/start`, { method: 'POST', body: form })
             if (!res.ok) throw new Error(`${res.status}`)
             const sid = res.headers.get('X-Session-Id')
             const qText = decodeURIComponent(res.headers.get('X-Question-En') || '')
@@ -177,7 +158,7 @@ export default function ChatPage() {
                 form.append('audio', blob, 'answer.webm')
                 form.append('session_id', sessionId)
                 form.append('language', detectedLang)   // language hint → prevents STT misdetection
-                const res = await fetch(`${API}/voice/conversation/answer`, { method: 'POST', body: form })
+                const res = await fetch(`${API_BASE}/voice/conversation/answer`, { method: 'POST', body: form })
                 if (!res.ok) throw new Error(`${res.status}`)
 
                 const transcript = decodeURIComponent(res.headers.get('X-Transcript') || '')
@@ -231,7 +212,7 @@ export default function ChatPage() {
         setInput('')
         setLoading(true)
         try {
-            const res = await fetch(`${API}/chat`, {
+            const res = await fetch(`${API_BASE}/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: text, session_id: dbSessionId || 'frontend-demo' })
@@ -275,7 +256,7 @@ export default function ChatPage() {
                 <div className="voice-mode-banner">
                     <span className="voice-pulse-dot" />
                     <span>
-                        🌐 Detected: <strong>{LANG_NAMES[detectedLang] || detectedLang.toUpperCase()}</strong>
+                        🌐 Detected: <strong>{SUPPORTED_LANGUAGES[detectedLang] || detectedLang.toUpperCase()}</strong>
                         &nbsp;&bull; Tap 🎤 to speak
                     </span>
                     <button
