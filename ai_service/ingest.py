@@ -108,11 +108,11 @@ def load_all_schemes():
 
 # ── Main ingestion ─────────────────────────────────────────────────────────────
 def main():
-    print("🔍 Loading schemes from JSON files...")
+    print("Loading schemes from JSON files...")
     docs = load_all_schemes()
     print(f"   Loaded {len(docs)} active schemes")
 
-    print("\n📦 Connecting to ChromaDB...")
+    print("\nConnecting to ChromaDB...")
     CHROMA_DIR.mkdir(exist_ok=True)
     client = chromadb.PersistentClient(path=str(CHROMA_DIR))
 
@@ -140,7 +140,7 @@ def main():
     texts = [d[1] for d in docs]
     metas = [d[2] for d in docs]
 
-    print(f"\n✏️  Embedding and indexing {len(docs)} documents (batch={BATCH})...")
+    print(f"\nEmbedding and indexing {len(docs)} documents (batch={BATCH})...")
     for i in range(0, len(docs), BATCH):
         batch_ids   = ids[i:i+BATCH]
         batch_texts = texts[i:i+BATCH]
@@ -150,9 +150,9 @@ def main():
             documents=batch_texts,
             metadatas=batch_metas,
         )
-        print(f"   ✅ Indexed {min(i+BATCH, len(docs))}/{len(docs)}")
+        print(f"   Indexed {min(i+BATCH, len(docs))}/{len(docs)}")
 
-    print(f"\n🎉 ChromaDB ready: {collection.count()} documents indexed")
+    print(f"\nChromaDB ready: {collection.count()} documents indexed")
     print(f"📁 Stored at: {CHROMA_DIR}")
     print(f"\nTo query: python rag_chain.py")
 
