@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { Home, MessageCircle, FileText, Radio, User } from 'lucide-react'
+import { useScrollPosition } from '../lib/hooks'
 import './Navbar.css'
 
 const NAV_ITEMS = [
@@ -10,12 +11,13 @@ const NAV_ITEMS = [
     { to: '/profile', label: 'Profile', Icon: User },
 ]
 
-/* Animated SVG Logo removed - User requested original logo.png */
-
 /* Top navigation for desktop */
 export function Navbar() {
+    const scrollPos = useScrollPosition()
+    const isScrolled = scrollPos > 20
+
     return (
-        <nav className="navbar">
+        <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
             <NavLink to="/home" className="navbar-logo">
                 <div className="logo-img-circle">
                     <img src="/logo.png" alt="Yojna Setu" className="logo-img" />
