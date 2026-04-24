@@ -239,6 +239,26 @@ API Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
+## 🗺️ Project Roadmap
+
+- [ ] **Offline Mode**: Local model execution using Ollama for critical scheme info without internet.
+- [ ] **WhatsApp Integration**: Official bot for checking status and finding schemes via chat.
+- [ ] **Benefit Calculator**: Estimate direct-benefit-transfer (DBT) amounts for specific profiles.
+- [ ] **Smart Reminders**: Notify users about scheme renewal or application deadlines.
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions to make Yojna Setu even better! 
+
+1. **Bug Reports**: Open an issue for any bugs found.
+2. **Feature Requests**: Suggest new features via issues.
+3. **New Schemes**: Help us expand the dataset by submitting new scheme JSONs in `ai_service/data/schemes/`.
+4. **Code**: Feel free to submit Pull Requests for performance improvements or new UI animations.
+
+---
+
 ## 📄 License
 
 This project is built for social good. All government scheme data is sourced from official public portals.
