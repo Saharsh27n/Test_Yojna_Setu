@@ -75,33 +75,50 @@ def load_all_schemes():
     all_docs = []   # (id, text, metadata)
     idx = 0
 
+    if not DATA_DIR.exists():
+        print(f"⚠️  Data directory not found: {DATA_DIR}")
+        return []
+
     # 1. Central sector files in root of schemes/
+    print("   Scanning central sector files...")
     for f in sorted(DATA_DIR.glob("*.json")):
         if f.name in ("all_schemes.json",):
             continue
-        data = json.loads(f.read_text(encoding="utf-8"))
-        sector = data.get("sector", f.stem)
-        for scheme in data.get("schemes", []):
-            if scheme.get("status") == "active" or "status" not in scheme:
-                text = scheme_to_text(scheme)
-                meta = scheme_to_metadata(scheme, sector, source_file=f.name)
-                all_docs.append((f"central_{sector}_{idx}", text, meta))
-                idx += 1
+        try:
+            data = json.loads(f.read_text(encoding="utf-8"))
+            sector = data.get("sector", f.stem)
+            schemes = data.get("schemes", [])
+            for scheme in schemes:
+                if scheme.get("status") == "active" or "status" not in scheme:
+                    text = scheme_to_text(scheme)
+                    meta = scheme_to_metadata(scheme, sector, source_file=f.name)
+                    all_docs.append((f"central_{sector}_{idx}", text, meta))
+                    idx += 1
+        except Exception as e:
+            print(f"❌ Error reading {f.name}: {e}")
 
     # 2. State scheme files
     state_dir = DATA_DIR / "states"
-    for f in sorted(state_dir.glob("*.json")):
-        if f.name in ("all_states.json",):
-            continue
-        data = json.loads(f.read_text(encoding="utf-8"))
-        state_en = data.get("state_en", f.stem)
-        for scheme in data.get("schemes", []):
-            if scheme.get("status") == "active" or "status" not in scheme:
-                sector = scheme.get("sector", "general")
-                text = scheme_to_text(scheme, state=state_en)
-                meta = scheme_to_metadata(scheme, sector, state=state_en, source_file=f.name)
-                all_docs.append((f"state_{f.stem}_{idx}", text, meta))
-                idx += 1
+    if state_dir.exists():
+        print("   Scanning state sector files...")
+        for f in sorted(state_dir.glob("*.json")):
+            if f.name in ("all_states.json",):
+                continue
+            try:
+                data = json.loads(f.read_text(encoding="utf-8"))
+                state_en = data.get("state_en", f.stem)
+                schemes = data.get("schemes", [])
+                for scheme in schemes:
+                    if scheme.get("status") == "active" or "status" not in scheme:
+                        sector = scheme.get("sector", "general")
+                        text = scheme_to_text(scheme, state=state_en)
+                        meta = scheme_to_metadata(scheme, sector, state=state_en, source_file=f.name)
+                        all_docs.append((f"state_{f.stem}_{idx}", text, meta))
+                        idx += 1
+            except Exception as e:
+                print(f"❌ Error reading state file {f.name}: {e}")
+    else:
+        print("⚠️  State directory not found, skipping states.")
 
     return all_docs
 
